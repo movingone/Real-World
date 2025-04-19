@@ -11,9 +11,11 @@ import realWorld.tdd.domain.User;
 import realWorld.tdd.dto.UserSignUpRequest;
 import realWorld.tdd.repository.UserRepository;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -101,4 +103,36 @@ public class UserServiceTest {
         // then
         assertThat(loginUser).isNull();
     }
+
+    @DisplayName("사용자 정보 조회 성공")
+    @Test
+    void getUser() {
+        // given
+        Long userId = 1L;
+        User user = new User("test@google.com", "trump", "abc1234");
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        // when
+        User findUser = userService.getUser(userId);
+
+        // then
+        assertThat(findUser).isEqualTo(user);
+     }
+
+     @DisplayName("사용자 조회 실패")
+     @Test
+     void fail_getUser() {
+         // given
+         Long userId = 1L;
+
+         when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+         // then // when
+         assertThatThrownBy(() -> userService.getUser(userId))
+                 .isInstanceOf(NoSuchElementException.class);
+      }
+
+
+
 }
