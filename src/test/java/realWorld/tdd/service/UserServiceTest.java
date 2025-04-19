@@ -7,8 +7,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import realWorld.tdd.domain.User;
+import realWorld.tdd.dto.UserSignUpRequest;
+import realWorld.tdd.repository.UserRepository;
 
-import static net.bytebuddy.matcher.ElementMatchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -37,7 +40,7 @@ public class UserServiceTest {
 
 
         // then
-        verify(userRepository).save(any());
+        verify(userRepository).save(any(User.class));
         verify(passwordEncoder).encode("password");
 
     }
