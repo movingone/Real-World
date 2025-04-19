@@ -27,5 +27,11 @@ public class UserService {
         return userRepository.save(user);
     }
 
-
+    public User login(String email, String passWord) {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent() && passwordEncoder.matches(passWord, user.get().getPassword())) {
+            return user.get();
+        }
+        return null;
+    }
 }
