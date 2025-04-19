@@ -11,6 +11,9 @@ import realWorld.tdd.domain.User;
 import realWorld.tdd.dto.UserSignUpRequest;
 import realWorld.tdd.repository.UserRepository;
 
+import java.util.Optional;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -43,5 +46,59 @@ public class UserServiceTest {
         verify(userRepository).save(any(User.class));
         verify(passwordEncoder).encode("password");
 
+    }
+
+    @DisplayName("로그인 성공")
+    @Test
+    void login_success() {
+        // given
+        String email = "abc1234@test.com";
+        String passWord = "abcd1234";
+        String encodePassword = "12345678";
+        User user = new User(email, "testUser", encodePassword);
+
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(passWord, encodePassword)).thenReturn(true);
+
+        // when
+        User loginUser = userService.login(email, passWord);
+
+        // then
+        assertThat(loginUser).isEqualTo(user);
+     }
+
+    @DisplayName("로그인 실패 이메일 없음")
+    @Test
+    void login_fail_notEmail() {
+        // given
+        String email = "abc1234@test.com";
+        String passWord = "abcd1234";
+
+        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        // when
+        User loginUser = userService.login(email, passWord);
+
+        // then
+        assertThat(loginUser).isNull();
+    }
+
+    @DisplayName("로그인 실패 비밀번호 불일치")
+    @Test
+    void login_fail_notPassword() {
+        // given
+        String email = "abc1234@test.com";
+        String passWord = "abcd1234";
+        String encodePassword = "12345678";
+        User user = new User(email, "testUser", encodePassword);
+
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(passWord, encodePassword)).thenReturn(false);
+
+        // when
+        User loginUser = userService.login(email, passWord);
+
+        // then
+        assertThat(loginUser).isNull();
     }
 }

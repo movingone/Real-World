@@ -2,9 +2,12 @@ package realWorld.tdd.service;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import realWorld.tdd.domain.User;
 import realWorld.tdd.dto.UserSignUpRequest;
 import realWorld.tdd.repository.UserRepository;
+
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -17,9 +20,12 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     public User signUp(UserSignUpRequest request) {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         User user = new User(request.getEmail(), request.getUserId(), encodedPassword);
         return userRepository.save(user);
     }
+
+
 }
