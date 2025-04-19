@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import realWorld.tdd.domain.User;
 import realWorld.tdd.dto.UserSignUpRequest;
+import realWorld.tdd.dto.UserUpdateRequest;
 import realWorld.tdd.repository.UserRepository;
 
 import java.util.NoSuchElementException;
@@ -136,18 +137,15 @@ public class UserServiceTest {
 
       @DisplayName("사용자 정보 수정 성공")
       @Test
-      void test() {
+      void userInfo_update() {
           // given
           String email = "abc1234@test.com";
-          String passWord = "abcd1234";
           String encodePassword = "12345678";
           User user = new User(email, "testUser", encodePassword);
           String newName = "trump";
           String newBio = "new bio";
 
-          UserUpdateRequest request = new UserUpdateRequest();
-          request.userName(newName);
-          request.setBio(newBio);
+          UserUpdateRequest request = UserUpdateRequest.of(newName, newBio);
 
           when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
           when(userRepository.save(user)).thenReturn(user);
@@ -162,7 +160,7 @@ public class UserServiceTest {
 
     @DisplayName("사용자 정보 수정 실패 이메일 없음")
     @Test
-    void test() {
+    void userInfo_updateFail() {
         // given
         String email = "notfound@test.com";
         UserUpdateRequest request = new UserUpdateRequest();

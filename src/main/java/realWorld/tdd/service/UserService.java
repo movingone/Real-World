@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import realWorld.tdd.domain.User;
 import realWorld.tdd.dto.UserSignUpRequest;
+import realWorld.tdd.dto.UserUpdateRequest;
 import realWorld.tdd.repository.UserRepository;
 
 import java.util.NoSuchElementException;
@@ -43,5 +44,10 @@ public class UserService {
                 .orElseThrow(() -> new NoSuchElementException("사용자를 찾을수 없습니다"));
     }
 
-
+    @Transactional
+    public User updateUser(String email, UserUpdateRequest request) {
+        User user = userRepository.findByEmail(email).orElseThrow(NoSuchElementException::new);
+        user.update(request);
+        return userRepository.save(user);
+    }
 }
