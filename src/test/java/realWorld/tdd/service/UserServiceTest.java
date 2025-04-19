@@ -134,5 +134,43 @@ public class UserServiceTest {
       }
 
 
+      @DisplayName("사용자 정보 수정 성공")
+      @Test
+      void test() {
+          // given
+          String email = "abc1234@test.com";
+          String passWord = "abcd1234";
+          String encodePassword = "12345678";
+          User user = new User(email, "testUser", encodePassword);
+          String newName = "trump";
+          String newBio = "new bio";
 
+          UserUpdateRequest request = new UserUpdateRequest();
+          request.userName(newName);
+          request.setBio(newBio);
+
+          when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+          when(userRepository.save(user)).thenReturn(user);
+
+          // when
+          User updateUser = userService.updateUser(email, request);
+
+          // then
+          assertThat(updateUser.getUserName()).isEqualTo(newName);
+          assertThat(updateUser.getBio()).isEqualTo(newBio);
+       }
+
+    @DisplayName("사용자 정보 수정 실패 이메일 없음")
+    @Test
+    void test() {
+        // given
+        String email = "notfound@test.com";
+        UserUpdateRequest request = new UserUpdateRequest();
+
+        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        // when // then
+        assertThatThrownBy(() -> userService.updateUser(email, request))
+                .isInstanceOf(NoSuchElementException.class);
+    }
 }

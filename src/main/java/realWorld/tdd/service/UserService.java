@@ -37,9 +37,11 @@ public class UserService {
         return null;
     }
 
-
+    @Transactional(readOnly = true)
     public User findUser(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("사용자를 찾을수 없습니다"));
     }
+
+
 }
