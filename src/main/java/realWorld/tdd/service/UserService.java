@@ -7,6 +7,7 @@ import realWorld.tdd.domain.User;
 import realWorld.tdd.dto.UserSignUpRequest;
 import realWorld.tdd.repository.UserRepository;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -37,5 +38,8 @@ public class UserService {
     }
 
 
-
+    public User findUser(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("사용자를 찾을수 없습니다"));
+    }
 }

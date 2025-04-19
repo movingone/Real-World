@@ -114,7 +114,7 @@ public class UserServiceTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
         // when
-        User findUser = userService.getUser(userId);
+        User findUser = userService.findUser(userId);
 
         // then
         assertThat(findUser).isEqualTo(user);
@@ -129,7 +129,7 @@ public class UserServiceTest {
          when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
          // then // when
-         assertThatThrownBy(() -> userService.getUser(userId))
+         assertThatThrownBy(() -> userService.findUser(userId))
                  .isInstanceOf(NoSuchElementException.class);
       }
 
